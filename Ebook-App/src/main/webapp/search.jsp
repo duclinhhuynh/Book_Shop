@@ -1,0 +1,74 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<%@ page import="java.sql.Connection"%>
+<%@ page import="com.DAO.BookDaoImpl"%>
+<!-- Replace "your.package.name" with the actual package name for BookDaoImpl -->
+<%@ page import="com.DB.DBConnect"%>
+<!-- Replace "your.package.name" with the actual package name for DBConnect -->
+<%@ page import="com.entity.BookDtls"%>
+<!-- Replace "your.package.name" with the actual package name for BookDaoImpl -->
+<%@ page import="java.util.List"%>
+<%@ page import="com.entity.User"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<%@include file="all_component/allCss.jsp"%>
+</head>
+<body>
+	<%@include file="all_component/navbar.jsp"%>
+	<%
+	User u = (User) session.getAttribute("userobj");
+	%>
+	<div class="container-fluid back-img">
+		<h2 class="text-center text-danger">Book Management</h2>
+	</div>
+	<div class="container">
+		<h3 class="text-center">New book</h3>
+		<div class="row">
+			<%
+			String ch =request.getParameter("ch");
+			BookDaoImpl dao2 = new BookDaoImpl(DBConnect.getConnection());
+			List<BookDtls> list2 = dao2.getBookBySerch(ch);
+			for (BookDtls b : list2) {
+			%>
+			<div class=col-md-3>
+				<div class="card crd-ho">
+					<div class="card-body text-center">
+						<img alt="" src="book/<%=b.getPhotoName()%>"
+							style="width: 150px; height: 200px" class="img-thumblin">
+
+						<p><%=b.getBookName()%></p>
+						<p><%=b.getAuthor()%></p>
+						<p>Categories:New</p>
+						<div class="row">
+							<%
+							if (u == null) {
+							%>
+							<a href="login.jsp" class="btn btn-danger btn-sm p-1 m-1 ml-2"><i
+								class="fa-solid fa-cart-shopping"></i>Add cart</a>
+							<%
+							} else {
+							%>
+							<a href="cart?bid=<%=b.getBookId()%>&&uid=<%=u.getId()%>"
+								class="btn btn-danger btn-sm p-1 m-1 ml-2"><i
+								class="fa-solid fa-cart-shopping"></i>Add cart</a>
+
+							<%
+							}
+							%>
+							<a href="view_books.jsp?bid=<%=b.getBookId()%>"
+								class="btn btn-success btn-sm p-1 m-1">View Details</a> <a
+								href="" class="btn btn-danger btn-sm p-1 m-1"><%=b.getPrice()%></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<%
+			}
+			%>
+		</div>
+	</div>
+</body>
+</html>
